@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">HazardPerceptionTest</string>
+    <string name="hpt">The Hazard Perception Test called the HPT for short , aims to access your ability to
+    detect and respond to hazard when driving.</string>
+    <string name="touch_to_continue">please touch here to continue</string>
+</resources>

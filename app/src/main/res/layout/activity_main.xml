@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.byteshaft.hazardperceptiontest.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:id="@+id/welcome"
+        android:background="@color/colorOrange">
+        <TextView
+            android:text="Welcome"
+            android:id="@+id/welcome_text"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:background="@color/colorAccent"
+        android:layout_below="@+id/welcome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_margin="5dp"
+            android:text="to the hazard Preception Test"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/hpt"
+            android:textColor="@android:color/white"
+            android:id="@+id/hpt_detail"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button"
+            android:textColor="@android:color/white"
+            android:text="@string/touch_to_continue"
+            android:textAllCaps="false"
+            android:background="@color/colorAccent"
+            android:id="@+id/button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -7,10 +7,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.VideoView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class TestActivity extends Activity implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
     private VideoView mVideoView;
+    private static HashMap<String, String[]> answersData;
+    private static ArrayList<String> questionsArray;
+
+    public static void setUpQuestionsData(ArrayList<String> arrayList, HashMap<String,
+            String[]> answers) {
+        answersData = new HashMap<>();
+        questionsArray = new ArrayList<>();
+        answersData = answers;
+        questionsArray = arrayList;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

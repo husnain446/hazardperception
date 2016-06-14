@@ -2,5 +2,7 @@
     <string name="app_name">HazardPerceptionTest</string>
     <string name="hpt">The Hazard Perception Test called the HPT for short , aims to access your ability to
     detect and respond to hazard when driving.</string>
-    <string name="touch_to_continue">please touch here to continue</string>
+    <string name="touch_to_continue">Please touch here to continue</string>
+    <string name="touch_screen_to_slow">Touch the screen when you would slow down</string>
+    <string name="film_clip">Please touch here to start the film clip</string>
 </resources>

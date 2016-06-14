@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button:
-                startActivity(new Intent(getApplicationContext(), TestActivity.class));
+                startActivity(new Intent(getApplicationContext(), VideoPlayActivity.class));
                 break;
         }
     }

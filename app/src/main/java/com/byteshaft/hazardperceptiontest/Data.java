@@ -16,7 +16,7 @@ public class Data {
         sQuestionsArray = new ArrayList<>();
         sAnswerHashMap = new HashMap<>();
         addQuestionsData();
-        TestActivity.setUpQuestionsData(sQuestionsArray, sAnswerHashMap);
+        VideoPlayActivity.setUpQuestionsData(sQuestionsArray, sAnswerHashMap);
     }
 
     public static void addQuestionsData() {

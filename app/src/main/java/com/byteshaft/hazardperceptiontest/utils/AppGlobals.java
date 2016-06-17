@@ -8,6 +8,7 @@ public class AppGlobals extends Application {
 
     public static Context sContext;
     public static final String NO_RESPONSE = "No response";
+    public static String TAG = "LOGTAG";
 
     @Override
     public void onCreate() {
@@ -17,5 +18,9 @@ public class AppGlobals extends Application {
 
     public static Context getContext() {
         return sContext;
+    }
+
+    public static String getLogTag(Class aclass) {
+        return TAG + aclass.getSimpleName();
     }
 }

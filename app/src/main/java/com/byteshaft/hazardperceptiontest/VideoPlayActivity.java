@@ -1,6 +1,10 @@
 package com.byteshaft.hazardperceptiontest;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +18,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.byteshaft.hazardperceptiontest.utils.AppGlobals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +36,10 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     private RelativeLayout videoLayout;
     private GestureDetector gestureTap;
 
+    private int totalTime = 0;
+    private int currentTime = 0;
+    private int questionNumber = 0;
+
     public static void setUpQuestionsData(ArrayList<String> arrayList, HashMap<String,
             String[]> answers) {
         answersData = new HashMap<>();
@@ -42,7 +52,9 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_test_activity);
+        Data.initDataForTest();
         question = (TextView) findViewById(R.id.question);
+        question.setText(questionsArray.get(questionNumber));
         relativeLayout = (RelativeLayout) findViewById(R.id.question_layout);
         playClip = (Button) findViewById(R.id.start_film);
         playClip.setOnClickListener(this);
@@ -53,6 +65,8 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureTap.onTouchEvent(event);
+        if (mVideoView.isPlaying()) {
+        }
         return super.onTouchEvent(event);
     }
 
@@ -60,12 +74,32 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         mVideoView = (VideoView) findViewById(R.id.videoView);
         mVideoView.setOnPreparedListener(this);
         mVideoView.setOnCompletionListener(this);
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.question_1;
+        String path = "android.resource://" + getPackageName() + "/" +
+                getQuestion(answersData.get(questionsArray.get(questionNumber))[2]);
         Log.i("TAG", "path " + path);
         mVideoView.setVideoURI(Uri.parse(path));
         mVideoView.seekTo(100);
     }
 
+    private int getQuestion(String imageName) {
+        switch (imageName) {
+            case "question_1":
+                return R.raw.question_1;
+            case "question_2":
+                return R.raw.question_2;
+            case "question_3":
+                return R.raw.question_3;
+            case "question_4":
+                return R.raw.question_4;
+            case "question_5":
+                return R.raw.question_5;
+            case "question_6":
+                return R.raw.question_6;
+            case "question_7":
+                return R.raw.question_7;
+        }
+        return 0;
+    }
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
@@ -83,7 +117,7 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
             case R.id.start_film:
                 Log.i("TAG", "click");
                 slideUp();
-//                showVideoView();
+                showVideoView();
                 break;
         }
     }
@@ -92,25 +126,25 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
 
         Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_down);
-       slideUp.setAnimationListener(new Animation.AnimationListener() {
-           @Override
-           public void onAnimationStart(Animation animation) {
+        slideUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-           }
+            }
 
-           @Override
-           public void onAnimationEnd(Animation animation) {
-               Log.i("TAG", "ended");
-               relativeLayout.setVisibility(View.GONE);
-               showVideoView();
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Log.i("TAG", "ended");
+                relativeLayout.setVisibility(View.GONE);
+                showVideoView();
 
-           }
+            }
 
-           @Override
-           public void onAnimationRepeat(Animation animation) {
+            @Override
+            public void onAnimationRepeat(Animation animation) {
 
-           }
-       });
+            }
+        });
         relativeLayout.startAnimation(slideUp);
     }
 
@@ -148,7 +182,39 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             Log.i("onSingleTap :", "" + e.getAction());
+            totalTime = mVideoView.getDuration();
+            currentTime = mVideoView.getCurrentPosition();
+            System.out.println(totalTime + "total time");
+            System.out.println(currentTime + "current time");
+            System.out.println(currentTime - totalTime + "pause time");
+            showDialog();
             return true;
         }
+    }
+
+    public void showDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                VideoPlayActivity.this);
+        alertDialogBuilder
+                .setMessage("Are you sure?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        questionNumber++;
+                        question.setText(questionsArray.get(questionNumber));
+                        mVideoView.setVisibility(View.GONE);
+                        relativeLayout.setVisibility(View.VISIBLE);
+                        if (mVideoView.isPlaying()) {
+                            relativeLayout.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

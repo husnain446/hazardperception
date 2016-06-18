@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,6 +28,7 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     private static HashMap<String, String[]> answersData;
     private static ArrayList<String> questionsArray;
     private RelativeLayout videoLayout;
+    private GestureDetector gestureTap;
 
     public static void setUpQuestionsData(ArrayList<String> arrayList, HashMap<String,
             String[]> answers) {
@@ -44,6 +47,13 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         playClip = (Button) findViewById(R.id.start_film);
         playClip.setOnClickListener(this);
         videoLayout = (RelativeLayout) findViewById(R.id.video_layout);
+        gestureTap = new GestureDetector(this, new GestureTap());
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureTap.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
     private void playVideo() {
@@ -126,5 +136,19 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
             }
         });
         videoLayout.startAnimation(slideUp);
+    }
+
+    class GestureTap extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Log.i("onDoubleTap :", "" + e.getAction());
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.i("onSingleTap :", "" + e.getAction());
+            return true;
+        }
     }
 }

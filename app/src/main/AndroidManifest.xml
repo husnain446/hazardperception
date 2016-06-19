@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".VideoPlayActivity" android:theme="@style/NoActionBar"/>
+        <activity android:name=".ResultActivity" android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

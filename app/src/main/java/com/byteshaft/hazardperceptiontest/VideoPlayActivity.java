@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,9 +35,11 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     private RelativeLayout videoLayout;
     private GestureDetector gestureTap;
 
-    private int totalTime = 0;
-    private int currentTime = 0;
+    private long totalTime = 0;
+    private long currentTime = 0;
     private int questionNumber = 0;
+
+    private HashMap<String, Boolean> answersHashMap;
 
     public static void setUpQuestionsData(ArrayList<String> arrayList, HashMap<String,
             String[]> answers) {
@@ -53,20 +54,29 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_test_activity);
         Data.initDataForTest();
+        answersHashMap = new HashMap<>();
         question = (TextView) findViewById(R.id.question);
-        question.setText(questionsArray.get(questionNumber));
         relativeLayout = (RelativeLayout) findViewById(R.id.question_layout);
         playClip = (Button) findViewById(R.id.start_film);
         playClip.setOnClickListener(this);
         videoLayout = (RelativeLayout) findViewById(R.id.video_layout);
         gestureTap = new GestureDetector(this, new GestureTap());
+        loadQuestion(questionNumber);
+    }
+
+    private void loadQuestion(int value) {
+        question.setText(questionsArray.get(value));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureTap.onTouchEvent(event);
-        if (mVideoView.isPlaying()) {
-        }
         return super.onTouchEvent(event);
     }
 
@@ -100,30 +110,76 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         }
         return 0;
     }
+
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        totalTime = mVideoView.getDuration();
         mediaPlayer.start();
-
     }
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        long currentMin = Long.parseLong(answersData.get(questionsArray.get(questionNumber))[0]);
+        if (currentMin == 10001) {
+            answersHashMap.put(questionsArray.get(questionNumber), true);
+        } else {
+            answersHashMap.put(questionsArray.get(questionNumber), false);
+        }
+        if ((questionNumber + 1) < questionsArray.size()) {
+            questionNumber = questionNumber + 1;
+            loadQuestion(questionNumber);
+            videoLayout.setVisibility(View.GONE);
+            showLayoutAgain();
+        } else {
+            loadResultActivity();
+        }
 
+    }
+
+
+    private void loadResultActivity() {
+        this.finish();
+        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+        intent.putExtra(AppGlobals.QUESTIONS_ARRAY, questionsArray);
+        intent.putExtra(AppGlobals.ANSWER_HASHMAP, answersHashMap);
+        startActivity(intent);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_film:
-                Log.i("TAG", "click");
                 slideUp();
-                showVideoView();
                 break;
         }
     }
 
-    private void slideUp() {
 
+    private void showLayoutAgain() {
+        Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_up);
+        slideUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                relativeLayout.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        relativeLayout.startAnimation(slideUp);
+    }
+
+
+    private void slideUp() {
         Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_down);
         slideUp.setAnimationListener(new Animation.AnimationListener() {
@@ -182,13 +238,14 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             Log.i("onSingleTap :", "" + e.getAction());
-            totalTime = mVideoView.getDuration();
-            currentTime = mVideoView.getCurrentPosition();
-            System.out.println(totalTime + "total time");
-            System.out.println(currentTime + "current time");
-            System.out.println(currentTime - totalTime + "pause time");
-            showDialog();
-            return true;
+            if (videoLayout.getVisibility() == View.VISIBLE) {
+                currentTime = mVideoView.getCurrentPosition();
+                mVideoView.pause();
+                showDialog();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -196,22 +253,39 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 VideoPlayActivity.this);
         alertDialogBuilder
-                .setMessage("Are you sure?")
+                .setTitle("Confirm Your Action")
+                .setMessage("Did you touch the screen?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        questionNumber++;
-                        question.setText(questionsArray.get(questionNumber));
-                        mVideoView.setVisibility(View.GONE);
-                        relativeLayout.setVisibility(View.VISIBLE);
-                        if (mVideoView.isPlaying()) {
-                            relativeLayout.setVisibility(View.GONE);
+                        System.out.println(totalTime + " total time");
+                        System.out.println(currentTime + " current time");
+                        System.out.println(totalTime - currentTime + " pause time");
+                        long currentMin = Long.parseLong(answersData.get(questionsArray.get(questionNumber))[0]);
+                        long currentMax = Long.parseLong(answersData.get(questionsArray.get(questionNumber))[1]);
+                        if (currentMin != 10001) {
+                            if (currentTime > currentMin && currentTime < currentMax) {
+                                answersHashMap.put(questionsArray.get(questionNumber), true);
+                            } else {
+                                answersHashMap.put(questionsArray.get(questionNumber), false);
+                            }
+                        } else {
+                            answersHashMap.put(questionsArray.get(questionNumber), false);
+                        }
+                        if ((questionNumber + 1) < questionsArray.size()) {
+                            questionNumber = questionNumber + 1;
+                            loadQuestion(questionNumber);
+                            videoLayout.setVisibility(View.GONE);
+                            showLayoutAgain();
+                        } else {
+                            loadResultActivity();
                         }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        mVideoView.resume();
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();

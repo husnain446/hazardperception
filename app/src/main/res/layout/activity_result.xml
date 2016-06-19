@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green_color">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_layout"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_shape"
+        android:layout_centerInParent="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:id="@+id/up_orange"
+            android:background="@drawable/up_orange"/>
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/up_orange"
+            android:layout_marginBottom="30dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="Result"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/result"
+            android:padding="5dp"
+            android:id="@+id/view"
+            android:background="#c0c0c0"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/view"
+            android:padding="5dp"
+            android:id="@+id/bottom_orange"
+            android:background="@drawable/bottom_round"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/go_to_start"
+        android:text="Go to start"
+        android:textColor="@android:color/white"
+        android:background="@color/green_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

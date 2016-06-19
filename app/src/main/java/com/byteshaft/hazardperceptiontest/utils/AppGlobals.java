@@ -2,15 +2,15 @@ package com.byteshaft.hazardperceptiontest.utils;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 
 public class AppGlobals extends Application {
 
     public static Context sContext;
-    public static final String NO_RESPONSE = "No response";
+    public static final String NO_RESPONSE = "10001";
     public static String TAG = "LOGTAG";
+    public static final String QUESTIONS_ARRAY = "question_array";
+    public static final String ANSWER_HASHMAP = "answer_hashmap";
 
     @Override
     public void onCreate() {

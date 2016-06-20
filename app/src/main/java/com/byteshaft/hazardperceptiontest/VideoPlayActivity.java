@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.byteshaft.hazardperceptiontest.utils.AppGlobals;
@@ -38,6 +39,7 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     private long totalTime = 0;
     private long currentTime = 0;
     private int questionNumber = 0;
+    private int stopPosition;
 
     private HashMap<String, Boolean> answersHashMap;
 
@@ -73,6 +75,12 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         super.onBackPressed();
         finish();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -131,7 +139,11 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
             videoLayout.setVisibility(View.GONE);
             showLayoutAgain();
         } else {
-            loadResultActivity();
+            if (!AppGlobals.isEnabled()) {
+                loadResultActivity();
+            } else {
+                finish();
+            }
         }
 
     }
@@ -228,6 +240,10 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         videoLayout.startAnimation(slideUp);
     }
 
+    private void releaseVideoView() {
+        mVideoView.stopPlayback();
+    }
+
     class GestureTap extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
@@ -258,15 +274,20 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        System.out.println(totalTime + " total time");
-                        System.out.println(currentTime + " current time");
-                        System.out.println(totalTime - currentTime + " pause time");
                         long currentMin = Long.parseLong(answersData.get(questionsArray.get(questionNumber))[0]);
                         long currentMax = Long.parseLong(answersData.get(questionsArray.get(questionNumber))[1]);
                         if (currentMin != 10001) {
                             if (currentTime > currentMin && currentTime < currentMax) {
+                                if (AppGlobals.isEnabled()) {
+                                    Toast.makeText(VideoPlayActivity.this, "Right answer", Toast.LENGTH_SHORT).show();
+                                }
                                 answersHashMap.put(questionsArray.get(questionNumber), true);
+
                             } else {
+                                if (AppGlobals.isEnabled()) {
+                                    Toast.makeText(VideoPlayActivity.this, "Wrong answer", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 answersHashMap.put(questionsArray.get(questionNumber), false);
                             }
                         } else {
@@ -278,14 +299,19 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
                             videoLayout.setVisibility(View.GONE);
                             showLayoutAgain();
                         } else {
-                            loadResultActivity();
+                            if (!AppGlobals.isEnabled()) {
+                                loadResultActivity();
+                            } else {
+                                finish();
+                            }
+
                         }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        mVideoView.resume();
+                        mVideoView.start();
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();

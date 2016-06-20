@@ -18,6 +18,8 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
     private TextView resultTextView;
     private Button goToStart;
     private boolean oneWrongAnswer = false;
+    private int rightAnswer = 0;
+    private TextView calculations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_result);
         setTitle("Test Result");
         resultTextView = (TextView) findViewById(R.id.result);
+        calculations = (TextView) findViewById(R.id.calculation);
         goToStart = (Button) findViewById(R.id.go_to_start);
         goToStart.setOnClickListener(this);
         ArrayList<String> questions = getIntent()
@@ -36,8 +39,11 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         for (String question: questions) {
             if (!answers.get(question)) {
                 oneWrongAnswer = true;
+            } else {
+                rightAnswer = rightAnswer + 1;
             }
         }
+        calculations.setText(rightAnswer+"/7");
         if (oneWrongAnswer) {
             resultTextView.setText("Fail");
             resultTextView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));

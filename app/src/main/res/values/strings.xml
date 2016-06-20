@@ -5,4 +5,6 @@
     <string name="touch_to_continue">Please touch here to continue</string>
     <string name="touch_screen_to_slow">Touch the screen when you would slow down</string>
     <string name="film_clip">Please touch here to start the film clip</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

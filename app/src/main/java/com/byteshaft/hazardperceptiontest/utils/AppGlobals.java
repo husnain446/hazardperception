@@ -2,6 +2,8 @@ package com.byteshaft.hazardperceptiontest.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 
 public class AppGlobals extends Application {
@@ -24,5 +26,19 @@ public class AppGlobals extends Application {
 
     public static String getLogTag(Class aclass) {
         return TAG + aclass.getSimpleName();
+    }
+
+    public static SharedPreferences getPreferenceManager() {
+        return PreferenceManager.getDefaultSharedPreferences(AppGlobals.getContext());
+    }
+
+    public static Boolean isEnabled() {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        return sharedPreferences.getBoolean("enable", false);
+    }
+
+    public static void enable(boolean state) {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        sharedPreferences.edit().putBoolean("enable", state).apply();
     }
 }

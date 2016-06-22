@@ -4,13 +4,21 @@
     android:layout_height="match_parent"
     android:background="@color/green_color">
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@color/colorOrange"
+        android:dividerHeight="1dp"
+        android:layout_above="@+id/main_layout"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/main_layout"
-        android:layout_margin="10dp"
-        android:background="@drawable/round_shape"
-        android:layout_centerInParent="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/round_shape">
 
         <View
             android:layout_width="match_parent"
@@ -26,7 +34,7 @@
             android:layout_marginRight="5dp"
             android:textColor="@android:color/white"
             android:layout_below="@id/up_orange"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="Result"
@@ -36,12 +44,12 @@
 
         <TextView
             android:id="@+id/calculation"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:textColor="@android:color/white"
             android:layout_below="@id/result"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="Result"

@@ -67,7 +67,7 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
     }
 
     private void loadQuestion(int value) {
-        question.setText(questionsArray.get(value));
+        question.setText((questionNumber+1)+ ". " +questionsArray.get(value));
     }
 
     @Override
@@ -240,10 +240,6 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
         videoLayout.startAnimation(slideUp);
     }
 
-    private void releaseVideoView() {
-        mVideoView.stopPlayback();
-    }
-
     class GestureTap extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
@@ -286,6 +282,8 @@ public class VideoPlayActivity extends Activity implements MediaPlayer.OnPrepare
                             } else {
                                 if (AppGlobals.isEnabled()) {
                                     Toast.makeText(VideoPlayActivity.this, "Wrong answer", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    mVideoView.start();
                                     return;
                                 }
                                 answersHashMap.put(questionsArray.get(questionNumber), false);
